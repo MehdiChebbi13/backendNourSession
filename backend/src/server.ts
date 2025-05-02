@@ -1,18 +1,27 @@
+import 'dotenv/config';   
 import Fastify from 'fastify';
 import cookie from '@fastify/cookie';
-import ws from '@fastify/websocket';
+import websocket from '@fastify/websocket';
 
 export const build = () => {
   const app = Fastify({ logger: true });
-  app.register(cookie, { secret: 'cookie-secret' });
-  app.register(ws);
 
+  // plugins that we’ll wire up later
+  app.register(cookie, { secret: 'cookie-secret' });
+  app.register(websocket);
+
+  // quick health check
   app.get('/health', async () => ({ ok: true }));
+
   return app;
 };
 
 if (require.main === module) {
-  build()
+  const app = build();
+  app
     .listen({ port: 3000, host: '0.0.0.0' })
-    .catch(console.error);
+    .catch((err) => {
+      app.log.error(err);
+      process.exit(1);
+    });
 }
