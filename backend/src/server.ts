@@ -2,6 +2,8 @@ import 'dotenv/config';
 import Fastify from 'fastify';
 import cookie from '@fastify/cookie';
 import websocket from '@fastify/websocket';
+import messageRoute from './routes/message';
+import sessionPlugin from './plugins/session';
 
 export const build = () => {
   const app = Fastify({ logger: true });
@@ -9,9 +11,11 @@ export const build = () => {
   // plugins that we’ll wire up later
   app.register(cookie, { secret: 'cookie-secret' });
   app.register(websocket);
-
+  app.register(sessionPlugin);
+  app.register(messageRoute);
   // quick health check
   app.get('/health', async () => ({ ok: true }));
+  
 
   return app;
 };
