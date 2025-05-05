@@ -4,6 +4,7 @@ import cookie from '@fastify/cookie';
 import websocket from '@fastify/websocket';
 import messageRoute from './routes/message';
 import sessionPlugin from './plugins/session';
+import chatRoute from './routes/chat';
 
 export const build = () => {
   const app = Fastify({ logger: true });
@@ -13,6 +14,7 @@ export const build = () => {
   app.register(websocket);
   app.register(sessionPlugin);
   app.register(messageRoute);
+  app.register(chatRoute);
   // quick health check
   app.get('/health', async () => ({ ok: true }));
   
