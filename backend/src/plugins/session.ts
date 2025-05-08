@@ -3,6 +3,7 @@ import Redis from 'ioredis';
 import { randomUUID } from 'crypto';
 
 export default fp(async (app) => {
+  console.log('[session] plug-in loaded');     
   const redis = new Redis(process.env.REDIS_URL ?? 'redis://127.0.0.1:6379');
 
   app.addHook('preHandler', async (req, reply) => {
@@ -17,6 +18,8 @@ export default fp(async (app) => {
 
       sid = `sess_${randomUUID()}`;
       await redis.setex(sid, 60 * 120, JSON.stringify({ restaurant: r, table: t }));
+      console.log('[session] creating sid', sid);
+
 
       reply.setCookie('sid', sid, {
         path: '/',
